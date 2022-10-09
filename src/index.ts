@@ -1,9 +1,13 @@
 import express  from "express";
+import cors from 'cors';
+import 'dotenv/config';
 console.log("AboStore-BACKEND ---------#2022/10/09")
 
 const app = express();
-app.listen(3000,()=>{
-    console.log('The server is listening on PORT 3000')
+
+app.use(cors());
+app.listen(process.env.PORT,()=>{
+    console.log(`The server is listening on PORT ${process.env.PORT} `)
 })
 
 app.get('/',(req,res)=>{
