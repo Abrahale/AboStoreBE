@@ -9,7 +9,7 @@ app.use(cors());
 app.listen(process.env.PORT,()=>{
     console.log(`The server is listening on PORT ${process.env.PORT} `)
 })
-
+console.log(process.env.PORT)
 app.get('/',(req,res)=>{
     res.send({
         "status":200,
