@@ -1,9 +1,14 @@
 import express  from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
-import {DbConnection, getConnectionInstance} from "./services/database.service"
+import {getConnectionInstance} from "./services/database.service"
 console.log("AboStore-BACKEND ---------#2022/10/09")
-import * as productRoute from "./routes/product.route";
+import { authenticationRouter } from "./routes/authentication";
+import { categoryRouter } from "./routes/category";
+import { departmentRouter } from "./routes/department";
+import { productsRouter } from "./routes/products";
+import { usersRouter } from "./routes/users.router";
+import { manufacturerRouter } from "./routes/manufacturer";
 dotenv.config();
 const app = express();
 app.use(express.json())
@@ -22,10 +27,9 @@ const options: cors.CorsOptions = {
 };
 app.use(cors());
 
-const db = getConnectionInstance();
+getConnectionInstance();
 app.listen(process.env.PORT,()=>{
     console.log(`The server is listening on PORT ${process.env.PORT} `)  
-    //console.log(db) 
 })
 app.get('/',(req,res)=>{
     res.send({
@@ -33,7 +37,9 @@ app.get('/',(req,res)=>{
         "message":"This is just to test this endpoint is working!"
     })
 })
-app.get("/products", productRoute.getProductList);
-app.post("/products",productRoute.createProduct);
-app.post("/update-product",productRoute.updateProduct);
-app.post("/delete-product",productRoute.deleteProduct);
+app.use("/users", usersRouter);
+app.use("/login", authenticationRouter);
+app.use("/departments", departmentRouter);
+app.use("/categories", categoryRouter);
+app.use("/manufacturer", manufacturerRouter);
+app.use("/products", productsRouter);
