@@ -25,6 +25,18 @@ productsRouter.get("/:id", async (req: Request, res: Response) => {
     handleError(res,`Unable to find matching document with id: ${req.query.id}`)
   }
 });
+productsRouter.post("/update", async (req: Request, res: Response) => {
+  const id = req.body.id;
+  try {
+      const query = { _id: id };
+      const result =  await Product.findOneAndUpdate(query,req.body).exec();
+      if (result) {
+        handleResponse(res,result)
+      }
+  } catch (error) {
+    handleError(res,`updating the product: ${req.query.id}`)
+  }
+});
 // POST
 productsRouter.post("/", async (req: Request, res: Response) => {
   try {

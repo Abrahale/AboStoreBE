@@ -1,19 +1,22 @@
 import { ObjectId } from "mongodb";
 import mongoose, { Schema } from "mongoose";
+import { Dimention } from "./dimenstion";
 
-export interface IDiscount {
+export interface IReview {
   id: ObjectId,
   name: string,
   description: string,
-  discount_percent:number,
-  discount_amount:number,
-  active:boolean,
+  user:mongoose.Schema.Types.ObjectId,
+  product:mongoose.Schema.Types.ObjectId,
+  rating:number,
+  like:number,
+  dislike:number,
   createdDate: Date,
   modifiedDate: Date,
   deletedDate: Date,
 }
 
-const discountSchema = new Schema<IDiscount>({
+const reviewSchema = new Schema<IReview>({
   name: {
     type: String,
     required: true,
@@ -21,25 +24,32 @@ const discountSchema = new Schema<IDiscount>({
   description: {
     type: String
   },
-  discount_percent:{
+  rating:{
+    type:Number,
+    required:true
+  },
+  like:{
     type:Number,
     required:true,
     default:0
   },
-  discount_amount:{
+  dislike:{
     type:Number,
     required:true,
     default:0
   },
-  active:{
-    type:Boolean,
-    require:true,
-    default:false
+  user:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  product:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
   },
   createdDate: { type: Date, default: Date.now },
   modifiedDate: { type: Date, default: Date.now },
   deletedDate: { type: Date },
 })
 
-export const Discount = mongoose.model<IDiscount>('Discount',discountSchema);
+export const Review = mongoose.model<IReview>('Review',reviewSchema);
 

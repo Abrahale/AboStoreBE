@@ -4,7 +4,7 @@ export interface ICategory {
   id: ObjectId,
   name: string,
   description: string,
-  department:object,
+  department:mongoose.Schema.Types.ObjectId,
   createdDate: Date,
   modifiedDate: Date,
   deletedDate: Date,

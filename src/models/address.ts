@@ -20,5 +20,4 @@ const addressSchema = new Schema({
   isPrimary: { type: Boolean }
 });
 
-const Address = mongoose.model("Address", addressSchema);
-module.exports = Address;
+export const Address = mongoose.model("Address", addressSchema);

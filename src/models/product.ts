@@ -7,6 +7,7 @@ export interface IProduct {
   title: string,
   sku: string,
   category: mongoose.Schema.Types.ObjectId,
+  brand: mongoose.Schema.Types.ObjectId,
   manufacturer: mongoose.Schema.Types.ObjectId,
   quantity:number,
   available:boolean,
@@ -44,6 +45,11 @@ const productSchema = new Schema<IProduct>({
   category: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
+    default:[]
+  }],
+  brand: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Brand",
     default:[]
   }],
   manufacturer: [{

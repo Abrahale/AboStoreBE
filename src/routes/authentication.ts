@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { handleResponse, handleError } from "../middleware/response.middeware";
 import { User } from "../models/user";
-import {IAuthenticationModel} from '../models/authenticationModel'
+import {IAuthentication} from '../models/authentication'
 
 export const authenticationRouter = express.Router();
 authenticationRouter.use(express.json())
@@ -9,7 +9,7 @@ authenticationRouter.use(express.json())
 //BASIC AUTHENTICATION - Add JWT and properly implement it!
 authenticationRouter.post('/',async (req:Request,res:Response) =>{
   try{
-      const userDetails = req?.body as IAuthenticationModel;
+      const userDetails = req?.body as IAuthentication;
       if(userDetails.email == null || userDetails.password == null )
         handleError(res,"Please, enter information to login",403);
       const result = await User.find({email:userDetails.email, password: userDetails.password}).exec();

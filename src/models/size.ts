@@ -1,36 +1,38 @@
 import { ObjectId } from "mongodb";
 import mongoose, { Schema } from "mongoose";
 
-export interface IOrderItem {
+export interface ISize {
   id: ObjectId,
-  order: mongoose.Schema.Types.ObjectId,
-  product: mongoose.Schema.Types.ObjectId,
+  name: string,
+  description: string,
+  value:string,
   qty:number,
-  comment: string,
   createdDate: Date,
   modifiedDate: Date,
   deletedDate: Date,
 }
 
-const oderItemSchema = new Schema<IOrderItem>({
-  order:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Order"
+const sizeSchema = new Schema<ISize>({
+  name: {
+    type: String,
+    required: true,
   },
-  product:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Order"
+  description: {
+    type: String
+  },
+  value:{
+    type:String,
+    required:true
   },
   qty:{
     type:Number,
     required:true,
     default:0
   },
-  comment:{
-    type:String,
-    required:true
-  },
   createdDate: { type: Date, default: Date.now },
   modifiedDate: { type: Date, default: Date.now },
   deletedDate: { type: Date },
 })
+
+export const Size = mongoose.model<ISize>('Size',sizeSchema);
+
