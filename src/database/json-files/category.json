@@ -1,0 +1,42 @@
+[
+    {
+        "name":"Audio Out",
+        "description":"Headphones, speakers, headsets, etc",
+        "department":["6359b51fb881b82ea3668001","636d3c81cfe71cd90ff2798f"]
+    },
+    {
+        "name":"Men",
+        "description":"things men wear",
+        "department":["636d3c81cfe71cd90ff2798d"]
+    },
+    {
+        "name":"Women",
+        "description":"things women wear",
+        "department":["636d3c81cfe71cd90ff2798d"]
+    },
+    {
+        "name":"Boys",
+        "description":"things boys wear",
+        "department":["636d3c81cfe71cd90ff2798d"]
+    },
+    {
+        "name":"Girls",
+        "description":"things girls wear",
+        "department":["636d3c81cfe71cd90ff2798d"]
+    },
+    {
+        "name":"Cellphones",
+        "description":"mobile devices",
+        "department":["6359b51fb881b82ea3668001"]
+    },
+    {
+        "name":"Smart Watches",
+        "description":"smart watch,",
+        "department":["6359b51fb881b82ea3668001"]
+    },
+    {
+        "name":"Watches",
+        "description":"smart watch,",
+        "department":["6359b51fb881b82ea3668001","636d3c81cfe71cd90ff2798d"]
+    }
+]

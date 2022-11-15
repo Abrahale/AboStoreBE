@@ -9,6 +9,7 @@ import { departmentRouter } from "./routes/department";
 import { productsRouter } from "./routes/products";
 import { usersRouter } from "./routes/users.router";
 import { manufacturerRouter } from "./routes/manufacturer";
+import { seedDatabaseRouter } from "./database/seed_db";
 dotenv.config();
 const app = express();
 app.use(express.json())
@@ -43,3 +44,4 @@ app.use("/departments", departmentRouter);
 app.use("/categories", categoryRouter);
 app.use("/manufacturer", manufacturerRouter);
 app.use("/products", productsRouter);
+app.use("/seed-db", seedDatabaseRouter)

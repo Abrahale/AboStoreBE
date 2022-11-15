@@ -12,11 +12,27 @@ export class DbConnection{
           else
               console.log(`========== DB connection to ${process.env.DB_NAME} established ===========`);
       })
-  }
-}
 
+    // If node exits, terminate mongoose connection
+    process.on('SIGINT', () => {
+    moongose.connection.close(() => {
+      console.info('INFO: Node is down. So the Mongoose.');
+
+      process.exit(0);
+    });   
+
+    }); 
+
+    process.on('SIGINT', () => {
+      moongose.connection.close(() => {
+        console.info('INFO: Node is down. So the Mongoose.');
+    
+        process.exit(0);
+      });
+    }); 
+  }
+
+}
 export const getConnectionInstance = () =>{
   return new DbConnection();  
 }
-
-

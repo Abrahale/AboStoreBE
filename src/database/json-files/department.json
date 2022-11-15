@@ -1,0 +1,42 @@
+[
+    {
+        "name":"AutoMotive",
+        "description":"cars trucks any device that has a motor"
+    },
+    {
+        "name":"Baby and Todller",
+        "description":"Baby products, such as diapers, wipes, clothes and toys"
+    },
+    {
+        "name":"Cosmetics and Beauty",
+        "description":"hair products, face creames etc"
+    },
+    {
+        "name":"Fashion",
+        "description":"Things we can wear, clothes, shoes, watches, etc"
+    },
+    {
+        "name":"Electronics",
+        "description":"Devices that mostly use DC current"
+    },
+    {
+        "name":"TV, Audio and Media",
+        "description":"TV's speakers, usb, cameras, speakers etc"
+    },
+    {
+        "name":"Home and Appliances",
+        "description":"Fridge, stoves, microwaves etc"
+    },
+    {
+        "name":"Sports and Training",
+        "description":"Gym equipment, training stuff etc"
+    },
+    {
+        "name":"Camping and outdoor",
+        "description":"stuff used for camping and outdoor things"
+    },
+    {
+        "name":"groceries",
+        "description":"items you can find in grocery stores"
+    }
+]
