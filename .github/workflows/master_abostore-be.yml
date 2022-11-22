@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Set up Node.js 18.7.0
         uses: actions/setup-node@v1
         with:
@@ -26,7 +26,7 @@ jobs:
           npm install
           npm run build-prod --if-present
           npm run test --if-present
-       working-directory: build
+        working-directory: build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
