@@ -2,22 +2,18 @@
   "name": "abostorebe",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "node build/index.js",
     "build": "rimraf ./dist && tsc",
     "build-prod": "npm install && npm run build",
     "server": "nodemon --verbose --watch \"src\" --ext \"ts,json\" --exec ts-node src/index.ts",
-    "client": "npm start",
-    "start:dev": "tsc-watch --onSuccess \"node --inspect=4000 ./dist/src/server.js\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/cors": "^2.8.12",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
-    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "eslint": "^8.28.0",
     "eslint-config-standard-with-typescript": "^23.0.0",
@@ -27,8 +23,10 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.14",
     "@types/node": "^18.8.3",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "mongoose": "^6.6.5",
     "nodemon": "^2.0.20",
