@@ -51,6 +51,6 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'abo-store'
-          slot-name: 'Production'
+          slot-name: 'XDT_MicrosoftApplicationInsights_NodeJS'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_95F8E22573F64855812E119E5163E5EE }}
           package: .
