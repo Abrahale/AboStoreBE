@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'Abostore-BE'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_162526F0E74748789C84633A5CFAC11E }}
           package: .
