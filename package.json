@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node build/index.js",
-    "build": "rimraf ./dist && tsc",
-    "build-prod": "npm install && npm run build",
-    "server": "nodemon --verbose --watch \"src\" --ext \"ts,json\" --exec ts-node src/index.ts"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev":"nodemon",
+    "build": "rimraf ./build && tsc",
+    "start":"npm run build && node build/index.js",
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [],
   "author": "",

@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import { handleResponse } from "../middleware/response.middeware";
 import { Category } from "../models/category";
 import { Department } from "../models/department";
-import { IProduct, Product } from "../models/product";
 import deparment from './json-files/department.json';
 import category from './json-files/category.json';
 // Global Config

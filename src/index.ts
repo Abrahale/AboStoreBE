@@ -10,6 +10,7 @@ import { productsRouter } from "./routes/products";
 import { usersRouter } from "./routes/users.router";
 import { manufacturerRouter } from "./routes/manufacturer";
 import { seedDatabaseRouter } from "./database/seed_db";
+import { cartRouter } from "./routes/cart";
 dotenv.config();
 const app = express();
 app.use(express.json())
@@ -42,6 +43,7 @@ app.use("/users", usersRouter);
 app.use("/login", authenticationRouter);
 app.use("/departments", departmentRouter);
 app.use("/categories", categoryRouter);
+app.use("/cart", cartRouter);
 app.use("/manufacturer", manufacturerRouter);
 app.use("/products", productsRouter);
 app.use("/seed-db", seedDatabaseRouter)
