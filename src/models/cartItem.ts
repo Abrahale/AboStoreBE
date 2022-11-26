@@ -5,6 +5,7 @@ export interface ICartItem {
   id: ObjectId,
   product: mongoose.Schema.Types.ObjectId,
   user:mongoose.Schema.Types.ObjectId,
+  cart:mongoose.Schema.Types.ObjectId,
   qty:number,
   active:boolean,
   createdDate: Date,
@@ -21,6 +22,11 @@ const cartItemSchema = new Schema<ICartItem>({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required:true
+  },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cart",
     required:true
   },
   qty: {
@@ -44,4 +50,4 @@ const cartItemSchema = new Schema<ICartItem>({
   },
 });
 
-export const Cart = mongoose.model<ICartItem>('Cart',cartItemSchema);
+export const CartItem = mongoose.model<ICartItem>('CartItem',cartItemSchema);

@@ -47,4 +47,4 @@ const userSchema = new Schema<IUser>({
     modifiedDate: { type: Date, default: Date.now },
 })
 
-export const User = moongose.model<IUser>("user", userSchema);
+export const User = moongose.model<IUser>("User", userSchema);

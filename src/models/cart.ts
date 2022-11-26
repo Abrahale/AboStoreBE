@@ -3,8 +3,8 @@ import mongoose, { Schema } from "mongoose";
 
 export interface ICart {
   id: ObjectId,
-  cartItem: mongoose.Schema.Types.ObjectId,
-  user:mongoose.Schema.Types.ObjectId,
+  cartItem: Schema.Types.ObjectId,
+  user:Schema.Types.ObjectId,
   total:number,
   totalItems:number,
   active:boolean,
@@ -15,16 +15,18 @@ export interface ICart {
 }
 
 const cartSchema = new Schema<ICart>({
-  cartItem: { type: Array, default: [] },
+  cartItem: [{ type: Schema.Types.ObjectId,ref:"CartItem"  }],
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User"
   },
   total: {
     type: Number,
+    default:0
   },
   totalItems: {
     type: Number,
+    default:0
   },
   active:{
     type:Boolean,
@@ -48,5 +50,9 @@ const cartSchema = new Schema<ICart>({
     type: Date,
   },
 });
+
+// cartSchema.virtual('totalItemsCount').get(function () {
+//   return this.cartItem
+// });
 
 export const Cart = mongoose.model<ICart>('Cart',cartSchema);

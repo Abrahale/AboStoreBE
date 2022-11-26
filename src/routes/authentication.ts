@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import { handleResponse, handleError } from "../middleware/response.middeware";
-import { User } from "../models/user";
+import { IUser, User } from "../models/user";
 import {IAuthentication} from '../models/authentication'
+import { Cart } from "../models/cart";
 
 export const authenticationRouter = express.Router();
 authenticationRouter.use(express.json())
@@ -12,12 +13,17 @@ authenticationRouter.post('/',async (req:Request,res:Response) =>{
       const userDetails = req?.body as IAuthentication;
       if(userDetails.email == null || userDetails.password == null )
         handleError(res,"Please, enter information to login",403);
-      const result = await User.find({email:userDetails.email, password: userDetails.password}).exec();
-      if(result.length == 0){
+      const result = await User.findOne({email:userDetails.email, password: userDetails.password}).exec();
+      if(!result){
         handleError(res,'Either your email or password is incorrect!',403);
       }
       else{
-        handleResponse(res,"Logged in successfully")
+        let r = await Cart.findOne({user:result.id}).exec();
+        if(!r){
+          const cart = new Cart({user:result.id, active:true, processed:false});
+          r = await cart.save();
+        }
+        handleResponse(res,{id:result.id,email:result.email,userName:result.username, cartId:r?.id})
       }
 
   }
