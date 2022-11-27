@@ -6,7 +6,7 @@ cartRouter.use(express.json());
 // GET
 cartRouter.get("/", async (_req: Request, res: Response) => {
   try {
-    //THIS IS AMAZING! I am loving Mongo
+    console.log('get / is running')
     const cart = await Cart.findOne().populate({path:'cartItem',populate:{path:'product', populate:{path:'category',populate:{path:'department'}}}}).exec();
     handleResponse(res,cart)
   } catch (error: any) {
@@ -14,11 +14,11 @@ cartRouter.get("/", async (_req: Request, res: Response) => {
   }
 });
 
-cartRouter.get("/:id", async (req: Request, res: Response) => {
-  const id = req.query.id;
+cartRouter.post("/id", async (req: Request, res: Response) => {
+  const id = req.body.id
   try {
-      const query = { _id: id };
-      const result = await Cart.findById(query).populate({path:'cartItem',populate:{path:'product', populate:{path:'category',populate:{path:'department'}}}}).exec();
+      const query = { _id: req.body.id  };
+      const result = await Cart.findOne(query).populate({path:'cartItem',populate:{path:'product', populate:{path:'category',populate:{path:'department'}}}}).exec();
       if (result) {
         handleResponse(res,result)
       }

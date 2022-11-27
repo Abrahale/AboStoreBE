@@ -31,22 +31,22 @@ cartItemRouter.post("/", async (req: Request, res: Response) => {
   try {
     const cartReq = req.body as ICartItem;
     const cartItem = new CartItem(cartReq);
-    console.log(cartReq)
     //check if product exists
     let r = await CartItem.findOne({product:cartReq.product, active:true, user:cartReq.user}).exec();
     let result;
     if(r){
-      console.log('Item already exists in cart')
       cartReq.qty += r.qty;
       result = await CartItem.findByIdAndUpdate(r.id,cartReq).exec();
+     // console.log(result)
+      const t = await Cart.findByIdAndUpdate(cartReq.cart,{$inc:{totalItems:result?.qty},$sum:{total:{$multiply:[result?.qty,result?.populate({path:'product',select:'price'})]}}});
+      console.log(t)
     }
     else{
-      console.log('Item does not exist')
       result = await cartItem.save();
+      const cartR = await Cart.findByIdAndUpdate(cartReq.cart,{$push:{cartItem:result}}).exec();
     }
    
-   const cartR = await Cart.findByIdAndUpdate(cartReq.cart,{$push:{cartItem:result}}).populate({path:'user'}).populate('cartItem').exec();
-     handleResponse(res,cartR)
+     handleResponse(res,result)
 } catch (error) {
   handleError(res,`Failed to create a new cart item. Error: ${error}`);
 }
