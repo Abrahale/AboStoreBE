@@ -38,12 +38,12 @@ cartItemRouter.post("/", async (req: Request, res: Response) => {
       cartReq.qty += r.qty;
       result = await CartItem.findByIdAndUpdate(r.id,cartReq).exec();
      // console.log(result)
-      const t = await Cart.findByIdAndUpdate(cartReq.cart,{$inc:{totalItems:result?.qty},$sum:{total:{$multiply:[result?.qty,result?.populate({path:'product',select:'price'})]}}});
+      const t = await Cart.findByIdAndUpdate(cartReq.cart,{$inc:{totalItems:result?.qty},$sum:{$multiply:[result?.qty,result?.populate({path:'product',select:'price'})]}});
       console.log(t)
     }
     else{
       result = await cartItem.save();
-      const cartR = await Cart.findByIdAndUpdate(cartReq.cart,{$push:{cartItem:result}}).exec();
+      const cartR = await Cart.findByIdAndUpdate(cartReq.cart,{$push:{cartItem:result}}).exec();//Fix this so that it pushes only if it doesn't exist
     }
    
      handleResponse(res,result)
