@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { handleResponse, handleError } from "../middleware/response.middeware";
 import { Cart } from "../models/cart";
 import { ICartItem, CartItem } from "../models/cartItem";
+import { getTotalItemsAndCount } from "../helpers/functions";
 export const cartItemRouter = express.Router();
 cartItemRouter.use(express.json());
 // GET
@@ -31,22 +32,75 @@ cartItemRouter.post("/", async (req: Request, res: Response) => {
   try {
     const cartReq = req.body as ICartItem;
     const cartItem = new CartItem(cartReq);
-    //check if product exists
-    let r = await CartItem.findOne({product:cartReq.product, active:true, user:cartReq.user}).exec();
-    let result;
-    if(r){
-      cartReq.qty += r.qty;
-      result = await CartItem.findByIdAndUpdate(r.id,cartReq).exec();
-     // console.log(result)
-      const t = await Cart.findByIdAndUpdate(cartReq.cart,{$inc:{totalItems:result?.qty},$sum:{$multiply:[result?.qty,result?.populate({path:'product',select:'price'})]}});
-      console.log(t)
+    let cart = new Cart;
+    //check if cart-item exists
+    try{
+      let result;
+      let r = await CartItem.findOne({product:cartReq.product, active:true, user:cartReq.user}).exec();
+     // console.log('existing cart item',r)
+      if(r !== null){
+        try{
+           await CartItem.updateOne({id:r.id,product:r.product},{qty:r.qty + cartReq.qty}).exec();
+       // console.log('result',updateCartItem)
+        }
+        catch(error){
+          handleError(res,`Failed to update cart-item. Error: ${error}`);
+        }
+      }
+      else{
+        result = await cartItem.save();
+        var itemInCart = await Cart.findOne({cartItem:result?.id}).exec();
+        if(itemInCart == null){
+          const cartR = await Cart.findByIdAndUpdate(cartReq.cart,{$push:{cartItem:result.id}}).exec();
+        }
+      }
+      try{
+        const cartInDb = await Cart.findOne({id:cartReq.cart,user:cartReq.user, active:true,processed:false }).populate({path:'cartItem',select:'qty',populate:{path:'product',select:['price','quantity']}}).exec();
+       // console.log('current cart', cartInDb)
+        if(cartInDb){
+          let totals = getTotalItemsAndCount(cartInDb.cartItem)
+          result = await Cart.updateMany({id:cartInDb.id},{total:totals['total'],totalItems:totals['totalItems']})
+        }
+        else{
+          return res.status(401).send({error:'No cart on session'});  
+        }
+      }
+      catch (error) {
+        handleError(res,`Failed to get session cart. Error: ${error}`);
+      }
+        if(result.acknowledged){
+          result = await Cart.findOne({id:cartReq.cart,user:cartReq.user, active:true,processed:false }).populate({path:'cartItem',populate:{path:'product'}}).exec();
+          handleResponse(res,result)
+        }
+        else{
+          handleError(res,`Error getting you cart:`);
+        }
     }
-    else{
-      result = await cartItem.save();
-      const cartR = await Cart.findByIdAndUpdate(cartReq.cart,{$push:{cartItem:result}}).exec();//Fix this so that it pushes only if it doesn't exist
+    catch (error) {
+      handleError(res,`Error adding cart item. Error: ${error}`);
     }
+    // let result;
+    // if(r){
+    //   cartReq.qty += r.qty;
+    //   result = await CartItem.findByIdAndUpdate(r.id,cartReq).exec();
+    //  // console.log(result)
+    //   const t = await Cart.findByIdAndUpdate(cartReq.cart,{$inc:{totalItems:result?.qty},$sum:{$multiply:[result?.qty,result?.populate({path:'product',select:'price'})]}});
+    //   console.log(t)
+    // }
+    // else{
+    //   result = await cartItem.save();
+    //   var itemInCart = await Cart.findOne({cartItem:result?.id}).exec();
+    //   if(itemInCart){
+    //     console.log('the item already exists in the cart')
+    //   }
+    //   else{
+    //     console.log('the item donesn\'t exist in db, and the cartItem is -->', result)
+    //     const cartR = await Cart.findByIdAndUpdate(cartReq.cart,{$push:{cartItem:result.id}}).exec();//Fix this so that it pushes only if it doesn't exist
+    //     console.log('Cart response after update', cartR)
+    //   }
+    // }
    
-     handleResponse(res,result)
+    //  handleResponse(res,result)
 } catch (error) {
   handleError(res,`Failed to create a new cart item. Error: ${error}`);
 }
