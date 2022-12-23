@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import mongoose, { Schema } from "mongoose";
 
 export interface IProduct {
-  id: ObjectId,
+  id: mongoose.Schema.Types.ObjectId,
   productCode:string,
   title: string,
   sku: string,

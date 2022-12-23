@@ -1,12 +1,11 @@
 import { ObjectId } from "mongodb";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
-export interface ICartItem {
-  id: ObjectId,
+export interface ICartItem{
+  id: mongoose.Schema.Types.ObjectId,
   product: mongoose.Schema.Types.ObjectId,
-  user:mongoose.Schema.Types.ObjectId,
-  cart:mongoose.Schema.Types.ObjectId,
   qty:number,
+  t_amnt:number,
   active:boolean,
   createdDate: Date,
   modifiedDate: Date,
@@ -19,17 +18,10 @@ const cartItemSchema = new Schema<ICartItem>({
     ref:"Product",
     required:true
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required:true
-  },
-  cart: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Cart",
-    required:true
-  },
   qty: {
+    type: Number,
+  },
+  t_amnt: {
     type: Number,
   },
   active:{

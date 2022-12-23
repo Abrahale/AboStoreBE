@@ -1,9 +1,10 @@
 import { ObjectId } from "mongodb";
 import mongoose, { Schema } from "mongoose";
+import { CartItem, ICartItem } from "./cartItem";
 
 export interface ICart {
   id: ObjectId,
-  cartItem: Schema.Types.ObjectId,
+  cartItem:  ICartItem[],
   user:Schema.Types.ObjectId,
   total:number,
   totalItems:number,
@@ -15,8 +16,8 @@ export interface ICart {
 }
 
 const cartSchema = new Schema<ICart>({
-  cartItem: [{ type: Schema.Types.ObjectId,ref:"CartItem"  }],
-  user: {
+  cartItem:[{type:CartItem.schema, default:[]}],  
+   user: {
     type: Schema.Types.ObjectId,
     ref: "User"
   },
