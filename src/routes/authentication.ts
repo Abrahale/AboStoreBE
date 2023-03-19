@@ -4,33 +4,28 @@ import { IUser, User } from "../models/user";
 import {IAuthentication} from '../models/authentication'
 import { Cart } from "../models/cart";
 import asyncHandler from "express-async-handler"
-
+ const ash = asyncHandler
 export const authenticationRouter = express.Router();
 authenticationRouter.use(express.json())
 
 //BASIC AUTHENTICATION - Add JWT and properly implement it!
-authenticationRouter.post('/',asyncHandler(async (req:Request,res:Response) =>{
-  try{
+authenticationRouter.post('/',ash(async (req:Request,res:Response) =>{
+
       const userDetails = req?.body as IAuthentication;
       if(userDetails.email == null || userDetails.password == null )
-        handleError(res,"Please, enter information to login",403);
-      const result = await User.findOne({email:userDetails.email, password: userDetails.password}).exec();
-      if(!result){
-        handleError(res,'Either your email or password is incorrect!',403);
-      }
-      else{
-        let r = await Cart.findOne({user:result.id}).exec();
+      throw new Error("Please, enter information to login")
+      const findUser = await User.findOne({email:userDetails.email}).exec()
+      if(findUser && await findUser.isPasswordMatched(userDetails.password)){
+            let r = await Cart.findOne({user:findUser.id}).exec();
         if(!r){
-          const cart = new Cart({user:result.id, active:true, processed:false});
+          const cart = new Cart({user:findUser.id, active:true, processed:false});
           r = await cart.save();
         }
-        handleResponse(res,{id:result.id,email:result.email,userName:result.username, cartId:r?.id})
+        handleResponse(res,{id:findUser.id,email:findUser.email,userName:findUser.username, cartId:r?.id})
       }
-
-  }
-  catch(err){
-    handleError(res,err);
-  }
+      else{
+        throw new Error("Invlalid Credentials, please try again!")
+      }
 }))
 
 
