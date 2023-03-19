@@ -17,9 +17,32 @@ usersRouter.get("/", ash(async (req: Request, res: Response) => {
 usersRouter.get("/:",ash( async (req: Request, res: Response) => {
   const id = req.query.id;
       const result =  await User.findById({_id:id});
-      console.log(result)
       if (result) {
         handleResponse(res,result)
+      }
+      else{
+        throw new  Error(`User Not Found with id: ${id}`);
+      }
+  }
+));
+usersRouter.get("/delete:",ash( async (req: Request, res: Response) => {
+  const id = req.query.id;
+      const result =  await User.findByIdAndDelete({_id:id});
+      if (result) {
+        handleResponse(res,'User deleted successfully')
+      }
+      else{
+        throw new  Error(`User Not Found with id: ${id}`);
+      }
+  }
+));
+
+usersRouter.put("/update/:id",ash( async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = req.body as IUser;
+      const result =  await User.findByIdAndUpdate(id,user,{new:true,});
+      if (result) {
+        handleResponse(res,`User updated successfully: ${result}`)
       }
       else{
         throw new  Error(`User Not Found with id: ${id}`);
