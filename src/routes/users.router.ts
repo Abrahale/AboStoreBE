@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import {IUser, User} from "../models/user";
 import { handleResponse, handleError } from "../middleware/response.middeware";
 import { authMiddleWare } from '../middleware/authMiddleWare.middleware';
+import { isValidObjectId } from '../utils/validateObjectId.utils';
 const ash = asyncHandler
 export const usersRouter = express.Router();
 usersRouter.use(express.json());
@@ -17,6 +18,7 @@ usersRouter.get("/", ash(async (req: Request, res: Response) => {
 
 usersRouter.get("/:",ash( async (req: Request, res: Response) => {
   const id = req.query.id;
+  isValidObjectId(id)
       const result =  await User.findById({_id:id});
       if (result) {
         handleResponse(res,result)
@@ -28,6 +30,7 @@ usersRouter.get("/:",ash( async (req: Request, res: Response) => {
 ));
 usersRouter.get("/delete:",ash( async (req: Request, res: Response) => {
   const id = req.query.id;
+  isValidObjectId(id)
       const result =  await User.findByIdAndDelete({_id:id});
       if (result) {
         handleResponse(res,'User deleted successfully')
@@ -40,6 +43,7 @@ usersRouter.get("/delete:",ash( async (req: Request, res: Response) => {
 
 usersRouter.put("/update/:id",authMiddleWare, ash( async (req: Request, res: Response) => {
   const { id } = req.params;
+  isValidObjectId(id)
   const user = req.body as IUser;
       const result =  await User.findByIdAndUpdate(id,user,{new:true,});
       if (result) {
