@@ -2,6 +2,7 @@ import  asyncHandler  from 'express-async-handler';
 import express, { Request, Response } from "express";
 import {IUser, User} from "../models/user";
 import { handleResponse, handleError } from "../middleware/response.middeware";
+import { authMiddleWare } from '../middleware/authMiddleWare.middleware';
 const ash = asyncHandler
 export const usersRouter = express.Router();
 usersRouter.use(express.json());
@@ -37,7 +38,7 @@ usersRouter.get("/delete:",ash( async (req: Request, res: Response) => {
   }
 ));
 
-usersRouter.put("/update/:id",ash( async (req: Request, res: Response) => {
+usersRouter.put("/update/:id",authMiddleWare, ash( async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.body as IUser;
       const result =  await User.findByIdAndUpdate(id,user,{new:true,});
