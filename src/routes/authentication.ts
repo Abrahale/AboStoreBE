@@ -3,12 +3,13 @@ import { handleResponse, handleError } from "../middleware/response.middeware";
 import { IUser, User } from "../models/user";
 import {IAuthentication} from '../models/authentication'
 import { Cart } from "../models/cart";
+import asyncHandler from "express-async-handler"
 
 export const authenticationRouter = express.Router();
 authenticationRouter.use(express.json())
 
 //BASIC AUTHENTICATION - Add JWT and properly implement it!
-authenticationRouter.post('/',async (req:Request,res:Response) =>{
+authenticationRouter.post('/',asyncHandler(async (req:Request,res:Response) =>{
   try{
       const userDetails = req?.body as IAuthentication;
       if(userDetails.email == null || userDetails.password == null )
@@ -30,4 +31,6 @@ authenticationRouter.post('/',async (req:Request,res:Response) =>{
   catch(err){
     handleError(res,err);
   }
-})
+}))
+
+

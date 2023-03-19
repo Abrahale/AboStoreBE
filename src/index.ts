@@ -11,9 +11,11 @@ import { usersRouter } from "./routes/users.router";
 import { manufacturerRouter } from "./routes/manufacturer";
 import { seedDatabaseRouter } from "./database/seed_db";
 import { cartRouter } from "./routes/cart";
+import { notFound, errorHandler } from "./middleware/errorHandler.middleware";
 dotenv.config();
 const app = express();
 app.use(express.json())
+app.use(express.urlencoded({extended:false}))
 const options: cors.CorsOptions = {
     allowedHeaders: [
         'Origin',
@@ -47,3 +49,6 @@ app.use("/cart", cartRouter);
 app.use("/manufacturer", manufacturerRouter);
 app.use("/products", productsRouter);
 app.use("/seed-db", seedDatabaseRouter)
+
+app.use(notFound)
+app.use(errorHandler)
