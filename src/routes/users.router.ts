@@ -4,6 +4,7 @@ import {IUser, User} from "../models/user";
 import { handleResponse, handleError } from "../middleware/response.middeware";
 import { authMiddleWare } from '../middleware/authMiddleWare.middleware';
 import { isValidObjectId } from '../utils/validateObjectId.utils';
+
 const ash = asyncHandler
 export const usersRouter = express.Router();
 usersRouter.use(express.json());

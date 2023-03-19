@@ -1,6 +1,7 @@
 import express  from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import {getConnectionInstance} from "./services/database.service"
 console.log("AboStore-BACKEND ---------#2022/10/09")
 import { authenticationRouter } from "./routes/authentication";
@@ -16,6 +17,7 @@ dotenv.config();
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
+app.use(cookieParser())
 const options: cors.CorsOptions = {
     allowedHeaders: [
         'Origin',
@@ -42,7 +44,7 @@ app.get('/',(req,res)=>{
     })
 })
 app.use("/users", usersRouter);
-app.use("/login", authenticationRouter);
+app.use("/auth", authenticationRouter);
 app.use("/departments", departmentRouter);
 app.use("/categories", categoryRouter);
 app.use("/cart", cartRouter);

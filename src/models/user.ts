@@ -10,7 +10,7 @@ export interface IUser {
     telephone?:string;
     createdDate?: Date;
     modifiedDate?: Date;
-
+    refreshToken?:string;
     isPasswordMatched(input:string):boolean;
 }
 
@@ -45,6 +45,9 @@ const userSchema = new Schema<IUser>({
         required: true,
         minlength: 6,
         maxlength: 1024
+    },
+    refreshToken: {
+        type: String,
     },
     createdDate: { type: Date, default: Date.now },
     modifiedDate: { type: Date, default: Date.now },
