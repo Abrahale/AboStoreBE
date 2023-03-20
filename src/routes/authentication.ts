@@ -1,12 +1,15 @@
+import { authMiddleWare } from './../middleware/authMiddleWare.middleware';
+import { User } from './../models/user';
 import { generateToken } from './../config/jwtToken';
 import { generateRefreshToken } from './../config/refreshToken';
 import express, { Request, Response } from "express";
 import { handleResponse, handleError } from "../middleware/response.middeware";
-import { IUser, User } from "../models/user";
 import {IAuthentication} from '../models/authentication';
 import { Cart } from "../models/cart";
 import asyncHandler from "express-async-handler";
 import jwt from 'jsonwebtoken';
+import { AuthRequest } from '../models/interfaces/request.interface';
+import { isValidObjectId } from '../utils/validateObjectId.utils';
  const ash = asyncHandler
 export const authenticationRouter = express.Router();
 authenticationRouter.use(express.json())
@@ -65,4 +68,17 @@ authenticationRouter.get('/logout',ash(async (req,res) => {
   await User.findOneAndUpdate({refreshToken},{refreshToken:""})
   res.clearCookie('refreshToken',{httpOnly:true, secure:true})
   handleResponse(res,'',204)
+}))
+
+authenticationRouter.put('/reset-password',authMiddleWare,ash(async (req:AuthRequest,res)=>{
+  const { _id } = req.user 
+  const { password } = req.body
+  isValidObjectId(_id)
+  const user = await User.findById({_id})
+  if(password){
+    user.password = password;
+    const updatedPassword = await user.save()
+    handleResponse(res,updatedPassword)
+  }
+  else throw new Error('We need a password, to update too')
 }))

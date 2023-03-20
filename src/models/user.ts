@@ -1,6 +1,9 @@
+import { ObjectId } from 'mongoose';
 import moongose, { Schema, model, connect } from 'mongoose';
 import bcrypt from "bcrypt"
+import crypto from "crypto"
 export interface IUser {
+    _id:ObjectId | string,
     username:string,
     first_name:string;
     last_name?:string;
@@ -11,7 +14,15 @@ export interface IUser {
     createdDate?: Date;
     modifiedDate?: Date;
     refreshToken?:string;
+
+    //For password resets
+    passwordChangedAt?: Date;
+    passwordResetToken?: string;
+    passwordResetExpires?: Date;
+
+    //Methods
     isPasswordMatched(input:string):boolean;
+    createPasswordRestToken():string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -54,12 +65,20 @@ const userSchema = new Schema<IUser>({
 })
 
 userSchema.pre("save", async function(next){
+    if(!this.isModified("password")) next()
     const salt = await bcrypt.genSaltSync(10)
     this.password = await bcrypt.hash(this.password,salt)
 })
 
 userSchema.methods.isPasswordMatched = async function(enteredPassword:string){
     return await bcrypt.compare(enteredPassword,this.password)
+}
+
+userSchema.methods.createPasswordRestToken =async function() {
+    const resetToken = crypto.randomBytes(32).toString("hex")
+    this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex")
+    this.passwordResetExpires = Date.now() + 30 * 60 * 1000 //I think this is 30 minutes
+    return resetToken
 }
 
 export const User = moongose.model<IUser>("User", userSchema);
