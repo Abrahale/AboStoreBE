@@ -12,6 +12,7 @@ import { usersRouter } from "./routes/users.router";
 import { manufacturerRouter } from "./routes/manufacturer";
 import { seedDatabaseRouter } from "./database/seed_db";
 import { cartRouter } from "./routes/cart";
+import { emailerRouter } from './routes/emailer.router';
 import { notFound, errorHandler } from "./middleware/errorHandler.middleware";
 dotenv.config();
 const app = express();
@@ -50,7 +51,8 @@ app.use("/categories", categoryRouter);
 app.use("/cart", cartRouter);
 app.use("/manufacturer", manufacturerRouter);
 app.use("/products", productsRouter);
-app.use("/seed-db", seedDatabaseRouter)
+app.use("/seed-db", seedDatabaseRouter);
+app.use("/emailer", emailerRouter);
 
 app.use(notFound)
 app.use(errorHandler)
