@@ -4,10 +4,12 @@ import { handleResponse, handleError } from "../middleware/response.middeware";
 import { Cart, ICart } from "../models/cart";
 import { ICartItem } from "../models/cartItem";
 import { IProduct, Product } from "../models/product";
+import asyncHandler from "express-async-handler";
+const ash = asyncHandler
 export const cartRouter = express.Router();
 cartRouter.use(express.json());
 
-cartRouter.post("/id", async (req: Request, res: Response) => {
+cartRouter.post("/id", ash(async (req: Request, res: Response) => {
   const id = req.body.id
   try {
     const query = { _id: req.body.id };
@@ -18,9 +20,9 @@ cartRouter.post("/id", async (req: Request, res: Response) => {
   } catch (error) {
     handleError(res, `Unable to find matching document with id: ${req.query.id}`)
   }
-});
+}));
 
-cartRouter.post("/add-to-cart", async (req: Request, res: Response) => {
+cartRouter.post("/add-to-cart", ash(async (req: Request, res: Response) => {
   const d = await getProductCart(req.body.cart,req.body.product)
     try {
       let ci_req = {
@@ -43,9 +45,9 @@ cartRouter.post("/add-to-cart", async (req: Request, res: Response) => {
       handleError(res, `Sorry we facing techinal issues: ${error}`);
     }
   }
-);
+));
 
-cartRouter.post("/updateQty", async (req: Request, res: Response) => {
+cartRouter.post("/updateQty",ash(async (req: Request, res: Response) => {
   const d = await getProductCart(req.body.cartId,req.body.product_id)
   const ress = updateCartQty(d.cart,d.product,req.body.inc);
   try{
@@ -58,10 +60,11 @@ cartRouter.post("/updateQty", async (req: Request, res: Response) => {
  catch(error){
    handleError(res,`Sorry we facing techinal issues. Error: ${error}`);
  }
-});
+}));
 
-cartRouter.post("/remove-from-cart", async (req: Request, res: Response) => {
+cartRouter.post("/remove-from-cart",ash(async (req: Request, res: Response) => {
   const d = await getProductCart(req.body.cartId,req.body.product_id)
+  if(!d) throw new Error(`There was an removing a cart-item: ${d}`)
   const ress = removeCartItem(d.cart,d.product);
   try{
      await Cart.findByIdAndUpdate(ress.cart.id, ress.cart).exec()
@@ -73,9 +76,23 @@ cartRouter.post("/remove-from-cart", async (req: Request, res: Response) => {
  catch(error){
    handleError(res,`Sorry we facing techinal issues. Error: ${error}`);
  }
-});
+}));
 
 const getProductCart = async (cart_id:string,pro_id:string):Promise<{product:IProduct,cart:ICart}> => {
+  var pro_details;
+  var cart_details;
+  try {
+    pro_details = await Product.findById(pro_id, ['price','quantity']).exec();
+    cart_details = await Cart.findById(cart_id, ['cartItem', 'total', 'totalItems']).exec();
+  }
+  catch (e) {
+    //need to send this exceptionless
+    console.log( `There was an error. Error: ${e}`);
+  }
+  return {product:pro_details, cart:cart_details}
+}
+
+const getAccurateEstimate = async (cart_id:string,pro_id:string):Promise<{product:IProduct,cart:ICart}> => {
   var pro_details;
   var cart_details;
   try {

@@ -7,7 +7,10 @@ departmentRouter.use(express.json());
 departmentRouter.get("/", async (_req: Request, res: Response) => {
   try {
     const department = await Department.find({}).exec();
-    handleResponse(res,department)
+    if(department != null){
+      handleResponse(res,department.map(d => depFE(d)))
+
+    }
   } catch (error: any) {
       handleError(res,error)
   }
@@ -36,3 +39,11 @@ departmentRouter.post("/", async (req: Request, res: Response) => {
   handleError(res,`Failed to create a new department. Error: ${error}`);
 }
 });
+
+const depFE = (dep:IDepartment) => {
+  return {
+    id:dep.id,
+    name:dep.name,
+    description:dep.description
+  }
+}
