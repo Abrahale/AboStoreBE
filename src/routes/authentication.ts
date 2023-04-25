@@ -82,3 +82,4 @@ authenticationRouter.put('/reset-password',authMiddleWare,ash(async (req:AuthReq
   }
   else throw new Error('We need a password, to update too')
 }))
+

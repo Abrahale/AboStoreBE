@@ -16,8 +16,7 @@ const manufacturerSchema = new mongoose.Schema<IManufacturer>({
         required:true
     },
     tel:{
-        type:String,
-        required:true
+        type:String
     },
     email:{
         type:String

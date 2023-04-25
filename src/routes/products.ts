@@ -6,7 +6,7 @@ productsRouter.use(express.json());
 // GET
 productsRouter.get("/", async (_req: Request, res: Response) => {
   try {
-    const products = await Product.find({}).exec();
+    const products = await Product.find({}).exec(); 
     handleResponse(res,products)
   } catch (error: any) {
       handleError(res,error)
@@ -48,3 +48,4 @@ productsRouter.post("/", async (req: Request, res: Response) => {
   handleError(res,"Failed to create a new product.");
 }
 });
+
