@@ -29,12 +29,19 @@ usersRouter.get("/:",ash( async (req: Request, res: Response) => {
       }
   }
 ));
-usersRouter.get("/delete:",ash( async (req: Request, res: Response) => {
+usersRouter.get("/delete/:",ash( async (req: Request, res: Response) => {
   const id = req.query.id;
   isValidObjectId(id)
       const result =  await User.findByIdAndDelete({_id:id});
-      if (result) {
-        handleResponse(res,'User deleted successfully')
+      if (result != null) {
+        console.log('what this supposed to return? ',result)
+        try {
+          const users = await User.find({}).exec();
+          let responseObject = {message:"User deleted successfully",users:[...users]}
+          handleResponse(res,responseObject)
+        } catch (error: any) {
+            handleError(res,{message:"User deleted successfully, but there was an error getting list of users",error:{...error}})
+        }
       }
       else{
         throw new  Error(`User Not Found with id: ${id}`);
@@ -62,8 +69,15 @@ usersRouter.post("/", ash(async (req: Request, res: Response) => {
         const findUser = await User.findOne({username:user.username, email:user.email})
         if(!findUser){
           const result = await user.save();
-          handleResponse(res,`Successfully created a new user:  ${result}`)
-
+          if(result != null){
+            try {
+              const users = await User.find({}).exec();
+              let responseObject = {message:"Successfully created a new user",users:[...users]}
+              handleResponse(res,responseObject)
+            } catch (error: any) {
+                handleError(res,{message:"Successfully created a new user, but there was an error getting list of users",error:{...error}})
+            }
+          }
         }
         else{
           throw new Error(`User already exists`);

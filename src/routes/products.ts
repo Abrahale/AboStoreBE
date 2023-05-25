@@ -1,7 +1,9 @@
 import express, { Request, Response } from "express";
 import { IProduct, Product} from "../models/product";
 import { handleResponse, handleError } from "../middleware/response.middeware";
+import  asyncHandler  from 'express-async-handler';
 export const productsRouter = express.Router();
+const ash = asyncHandler
 productsRouter.use(express.json());
 // GET
 productsRouter.get("/", async (_req: Request, res: Response) => {
@@ -38,14 +40,21 @@ productsRouter.post("/update", async (req: Request, res: Response) => {
   }
 });
 // POST
-productsRouter.post("/", async (req: Request, res: Response) => {
+productsRouter.post("/", ash(async (req: Request, res: Response) => {
   try {
     const newProduct = req.body as IProduct;
     const product = new Product(newProduct);
     const result = await product.save();
-     handleResponse(res,`Successfully created a new product with id ${result._id}`)
+    let responseObject = {message:"Successfully added a product",product:result}
+    handleResponse(res,responseObject)
 } catch (error) {
-  handleError(res,"Failed to create a new product.");
+  handleError(res,{message:`Failed to create a new product.`, error:{...error}});
 }
-});
+}));
+
+// productsRouter.post("delete:",ash(async(req:Request, res:Response) =>{
+//   try{
+    
+//   }
+// }))
 

@@ -1,8 +1,11 @@
 import express, { Request, Response } from "express";
 import { handleResponse, handleError } from "../middleware/response.middeware";
 import { ICategory, Category } from "../models/category";
+import  asyncHandler  from 'express-async-handler';
+
 export const categoryRouter = express.Router();
 categoryRouter.use(express.json());
+const ash = asyncHandler
 // GET
 categoryRouter.get("/", async (_req: Request, res: Response) => {
   try {
@@ -36,3 +39,19 @@ categoryRouter.post("/", async (req: Request, res: Response) => {
   handleError(res,`Failed to create a new category. Error: ${error}`);
 }
 });
+
+categoryRouter.post("/cat-by-department", ash(async (req:Request, res:Response)=>{
+    let query = req.body.department
+    console.log(query)
+    try{
+      const result = await Category.find({
+        department:{
+          $in:query
+        }
+      })
+      handleResponse(res,result)
+    }
+    catch(error){
+      handleError(res,error)
+    }
+}))
