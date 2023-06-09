@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { handleResponse, handleError } from "../middleware/response.middeware";
 import { ICategory, Category } from "../models/category";
 import  asyncHandler  from 'express-async-handler';
+import { isValidObjectId } from "../utils/validateObjectId.utils";
 
 export const categoryRouter = express.Router();
 categoryRouter.use(express.json());
@@ -55,3 +56,22 @@ categoryRouter.post("/cat-by-department", ash(async (req:Request, res:Response)=
       handleError(res,error)
     }
 }))
+
+categoryRouter.get("/delete/:",ash( async (req: Request, res: Response) => {
+  const id = req.query.id;
+  isValidObjectId(id)
+      const result =  await Category.findByIdAndDelete({_id:id});
+      if (result != null) {
+        try {
+          const categories = await Category.find({}).exec();
+          let responseObject = {message:"Category deleted successfully",categories:[...categories]}
+          handleResponse(res,responseObject)
+        } catch (error: any) {
+            handleError(res,{message:"Category deleted successfully, but there was an error getting list of departments",error:{...error}})
+        }
+      }
+      else{
+        throw new  Error(`Category Not Found with id: ${id}`);
+      }
+  }
+));
