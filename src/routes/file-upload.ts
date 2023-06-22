@@ -20,9 +20,13 @@ fileUploadRouter.post('/upload',async(req:Request,res:Response) => {
 })
 
 fileUploadRouter.get('/get-files',async (req,res)=>{
-    const result = await listS3Files(s3,process.env.BUCKET_NAME)
-    // const result = await s3.send(new ListObjectsV2Command(params));
-    res.send({images:result})
+    try{
+        const result = await listS3Files(s3,process.env.BUCKET_NAME)
+        handleResponse(res,{images:result})
+    }
+    catch(err){
+        handleError(res, err)
+    }
 })
 
 fileUploadRouter.post('/delete-file', async(req,res)=>{
