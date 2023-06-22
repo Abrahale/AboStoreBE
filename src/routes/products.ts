@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { IProduct, Product} from "../models/product";
 import { handleResponse, handleError } from "../middleware/response.middeware";
 import  asyncHandler  from 'express-async-handler';
+import { isValidObjectId } from "../utils/validateObjectId.utils";
 export const productsRouter = express.Router();
 const ash = asyncHandler
 productsRouter.use(express.json());
@@ -29,6 +30,7 @@ productsRouter.get("/:id", async (req: Request, res: Response) => {
 });
 productsRouter.post("/update", async (req: Request, res: Response) => {
   const id = req.body.id;
+  console.log('to be updated bosy', req.body)
   try {
       const query = { _id: id };
       const result =  await Product.findOneAndUpdate(query,req.body).exec();
@@ -52,9 +54,24 @@ productsRouter.post("/", ash(async (req: Request, res: Response) => {
 }
 }));
 
-// productsRouter.post("delete:",ash(async(req:Request, res:Response) =>{
-//   try{
-    
-//   }
-// }))
+productsRouter.get("/delete/:",ash( async (req: Request, res: Response) => {
+  const id = req.query.id;
+  isValidObjectId(id)
+      const result =  await Product.findByIdAndDelete({_id:id});
+      if (result != null) {
+        try {
+          const products = await Product.find({}).exec();
+          let responseObject = {message:"Product deleted successfully",products:[...products]}
+          handleResponse(res,responseObject)
+        } catch (error: any) {
+            handleError(res,{message:"Product deleted successfully, but there was an error getting list of departments",error:{...error}})
+        }
+      }
+      else{
+        throw new  Error(`Product Not Found with id: ${id}`);
+      }
+  }
+));
+
+
 

@@ -4,6 +4,7 @@ import { ICart } from "../models/cart";
 import { ICartItem } from "../models/cartItem";
 import { IProduct } from "../models/product";
 import { cartRouter } from "../routes/cart";
+import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 
 export const getTotalItemsAndCount = (input:any):object =>{
     let total = 0;
@@ -75,3 +76,29 @@ export const updateCartitem = (input:ICartItem[],newCI:ICartItem, price:number):
        return [...input,newCI]
     }
 }
+
+
+export const listS3Files = async (s3, bucket, prefix = null) => {
+    const params = {
+        Bucket: bucket,
+        Prefix: prefix,
+        MaxKeys: 1000,
+        ContinuationToken:null
+    };
+    let cycle = true;
+    const keys = [];
+    while (cycle) {
+        const data = await s3.send(new ListObjectsV2Command(params));
+        const { Contents, IsTruncated, NextContinuationToken } = data;
+        if (Contents) {
+            Contents.forEach((item) => {
+                keys.push(item.Key);
+            });
+        }
+        if (!IsTruncated || !NextContinuationToken) {
+            cycle = false;
+        }
+        params.ContinuationToken = NextContinuationToken;
+    }
+    return keys;
+  }
