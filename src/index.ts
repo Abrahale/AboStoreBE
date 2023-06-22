@@ -1,9 +1,7 @@
 import express  from "express";
 import cors from 'cors';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
 import {getConnectionInstance} from "./services/database.service"
-console.log("AboStore-BACKEND ---------#2022/10/09")
 import { authenticationRouter } from "./routes/authentication";
 import { categoryRouter } from "./routes/category";
 import { departmentRouter } from "./routes/department";
@@ -13,7 +11,9 @@ import { manufacturerRouter } from "./routes/manufacturer";
 import { seedDatabaseRouter } from "./database/seed_db";
 import { cartRouter } from "./routes/cart";
 import { emailerRouter } from './routes/emailer.router';
+import { fileUploadRouter } from './routes/file-upload'
 import { notFound, errorHandler } from "./middleware/errorHandler.middleware";
+import  cookieParser  from 'cookie-parser'
 dotenv.config();
 const app = express();
 app.use(express.json())
@@ -26,11 +26,11 @@ const options: cors.CorsOptions = {
         'Content-Type',
         'Accept',
         'X-Access-Token',
-      ],
-      credentials: true,
-      methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-      preflightContinue: false,
-      origin: ""
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    origin: ""
 };
 app.use(cors());
 
@@ -53,6 +53,6 @@ app.use("/manufacturer", manufacturerRouter);
 app.use("/products", productsRouter);
 app.use("/seed-db", seedDatabaseRouter);
 app.use("/emailer", emailerRouter);
-
+app.use("/file-uploads", fileUploadRouter)
 app.use(notFound)
 app.use(errorHandler)
