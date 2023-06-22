@@ -21,7 +21,7 @@ fileUploadRouter.post('/upload',async(req:Request,res:Response) => {
 
 fileUploadRouter.get('/get-files',async (req,res)=>{
     try{
-        const result = await listS3Files(s3,process.env.BUCKET_NAME)
+        const result = await listS3Files(s3,process.env.S3_BUCKET)
         handleResponse(res,{images:result})
     }
     catch(err){
