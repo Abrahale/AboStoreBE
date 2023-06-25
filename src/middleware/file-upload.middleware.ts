@@ -59,7 +59,6 @@ const ash =  asyncHandler
             Key:key
         })
         s3.send(command).then(response =>{
-            console.log(response)
             resolve(response)
 
         })
