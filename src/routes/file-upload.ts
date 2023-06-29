@@ -14,6 +14,7 @@ fileUploadRouter.post('/upload',async(req:Request,res:Response) => {
                 handleError(res,`Failed to upload image ${err}`)
             }
             else{
+                //This needs to be updated
                 handleResponse(res,{message:"sucessfully uploaded image", key:req.file['key']})
             }
         })
@@ -22,7 +23,7 @@ fileUploadRouter.post('/upload',async(req:Request,res:Response) => {
 fileUploadRouter.get('/get-files',async (req,res)=>{
     try{
         const result = await listS3Files(s3,process.env.S3_BUCKET)
-        handleResponse(res,{images:result})
+        handleResponse(res,result)
     }
     catch(err){
         handleError(res, err)
