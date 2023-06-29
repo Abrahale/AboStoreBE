@@ -40,7 +40,13 @@ cartRouter.post("/add-to-cart", ash(async (req: Request, res: Response) => {
         processed: false,
       } as unknown as ICart;
       const result = await Cart.findByIdAndUpdate(d.cart.id, cart_req).exec()
-      handleResponse(res, result)
+      if(result){
+        const cart = await Cart.findOne(result._id).populate({ path: 'cartItem', populate: { path: 'product', populate: { path: 'category', populate: { path: 'department' } } } }).exec();
+        handleResponse(res, cart)
+      }
+      else{
+        handleError(res,`Sorry we facing technical issues:`,'I don\'t even know what the error is',400)
+      }
     } catch (error) {
       handleError(res, `Sorry we facing techinal issues: ${error}`);
     }

@@ -63,11 +63,11 @@ authenticationRouter.get('/logout',ash(async (req,res) => {
   const user = await User.findOne({refreshToken})
   if(!user){
     res.clearCookie('refreshToken',{httpOnly:true, secure:true})
-    handleResponse(res,'',204)
+    handleResponse(res,'','',204)
   }
   await User.findOneAndUpdate({refreshToken},{refreshToken:""})
   res.clearCookie('refreshToken',{httpOnly:true, secure:true})
-  handleResponse(res,'',204)
+  handleResponse(res,'','',204)
 }))
 
 authenticationRouter.put('/reset-password',authMiddleWare,ash(async (req:AuthRequest,res)=>{
@@ -82,4 +82,3 @@ authenticationRouter.put('/reset-password',authMiddleWare,ash(async (req:AuthReq
   }
   else throw new Error('We need a password, to update too')
 }))
-
