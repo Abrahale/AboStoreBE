@@ -33,7 +33,7 @@ authenticationRouter.post('/login',ash(async (req:Request,res:Response) =>{
           const cart = new Cart({user:findUser.id, active:true, processed:false});
           r = await cart.save();
         }
-        handleResponse(res,{id:findUser.id,email:findUser.email,userName:findUser.username, cartId:r?.id, token:generateToken(findUser.id)})
+        handleResponse(res,{id:findUser.id,email:findUser.email,userName:findUser.username, cartId:r?.id, token:generateToken(findUser.id)},"Successfully logged in")
       }
       else{
         throw new Error("Invlalid Credentials, please try again!")

@@ -38,9 +38,9 @@ usersRouter.get("/delete/:",ash( async (req: Request, res: Response) => {
         try {
           const users = await User.find({}).exec();
           let responseObject = {message:"User deleted successfully",users:[...users]}
-          handleResponse(res,responseObject)
+          handleResponse(res,users,"User deleted successfully")
         } catch (error: any) {
-            handleError(res,{message:"User deleted successfully, but there was an error getting list of users",error:{...error}})
+            handleError(res,error,"User deleted successfully, but there was an error getting list of users")
         }
       }
       else{

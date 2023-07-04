@@ -35,7 +35,14 @@ categoryRouter.post("/", async (req: Request, res: Response) => {
     const newCategoryProduct = req.body as ICategory;
     const category = new Category(newCategoryProduct);
     const result = await category.save();
-     handleResponse(res,`Successfully created a new category with id ${result._id}`)
+    if(result){
+      const cats = await Category.find({}).exec()
+      if(cats)
+      handleResponse(res,cats,`Successfully created a category`)
+
+    }
+    else
+      handleError(res,res.errored,"Failed to create category, Please try again")
 } catch (error) {
   handleError(res,`Failed to create a new category. Error: ${error}`);
 }
@@ -61,13 +68,12 @@ categoryRouter.get("/delete/:",ash( async (req: Request, res: Response) => {
   const id = req.query.id;
   isValidObjectId(id)
       const result =  await Category.findByIdAndDelete({_id:id});
-      if (result != null) {
+      if (result) {
         try {
           const categories = await Category.find({}).exec();
-          let responseObject = {message:"Category deleted successfully",categories:[...categories]}
-          handleResponse(res,responseObject)
+          handleResponse(res,categories,"Category deleted successfully")
         } catch (error: any) {
-            handleError(res,{message:"Category deleted successfully, but there was an error getting list of departments",error:{...error}})
+            handleError(res,error,"Category deleted successfully, but there was an error getting list of departments")
         }
       }
       else{
