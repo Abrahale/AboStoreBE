@@ -16,7 +16,10 @@ export interface IProduct {
   price: number,
   discount: mongoose.Schema.Types.ObjectId,
   description: string,
-  image:Object,
+  featureList:Object,
+  specifications:Object,
+  mainImage:string,
+  image:string[],
   rating:number,
   createdDate: Date,
   modifiedDate: Date,
@@ -34,7 +37,11 @@ const productSchema = new Schema<IProduct>({
     required: true,
   },
   quantity: { type: Number, required: true },
-  image: { type: Array, required: true, default: [] },
+  image: [String],
+  mainImage: {
+    type: String,
+    required: false,
+  },
   description: {
     type: String,
     required: true,
@@ -63,6 +70,8 @@ const productSchema = new Schema<IProduct>({
     ref: "Manufacturer",
     default:[]
   }],
+  featureList:[],
+  specifications:[],
   available: {
     type: Boolean,
     required: true,
