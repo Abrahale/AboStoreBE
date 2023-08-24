@@ -40,6 +40,25 @@ authenticationRouter.post('/login',ash(async (req:Request,res:Response) =>{
       }
 }))
 
+authenticationRouter.post('/on-rf-session',ash(async (req:Request,res:Response) =>{
+
+      const id = req.body.id;
+      const findUser = await User.findById({_id:id}).exec()
+      if(findUser){
+        const refreshToken = generateRefreshToken(findUser.id);
+        const updateUser = await User.findByIdAndUpdate(findUser.id,{refreshToken:refreshToken},{new:true})
+        res.cookie('refreshToken',refreshToken, {
+          httpOnly:true,
+          maxAge:24 * 60 * 60 * 1000,
+        })
+        let r = await Cart.findOne({user:findUser.id}).exec();
+        handleResponse(res,{id:findUser.id,email:findUser.email,userName:findUser.username, cartId:r?.id, token:generateToken(findUser.id)},"")
+      }
+      else{
+        throw new Error("What whent wrong, Ab please make sure this dont get hit!")
+      }
+}))
+
 authenticationRouter.get('/refreshToken',ash(async (req,res) => {
   const cookie = req.cookies
   if(!cookie?.refreshToken) throw new Error('No Refresh token in cookies')

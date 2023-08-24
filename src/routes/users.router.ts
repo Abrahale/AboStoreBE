@@ -10,6 +10,7 @@ export const usersRouter = express.Router();
 usersRouter.use(express.json());
 usersRouter.get("/", ash(async (req: Request, res: Response) => {
     try {
+      console.log(req.cookies)
       const users = await User.find({}).exec();
       handleResponse(res,users)
     } catch (error: any) {

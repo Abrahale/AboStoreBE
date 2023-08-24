@@ -9,6 +9,7 @@ const ash = asyncHandler
 export const cartRouter = express.Router();
 cartRouter.use(express.json());
 
+//TODO - The cart needs to be queried by it's ID, userID, and Identifier
 cartRouter.post("/id", ash(async (req: Request, res: Response) => {
   const id = req.body.id
   try {

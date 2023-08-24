@@ -13,12 +13,14 @@ import { cartRouter } from "./routes/cart";
 import { emailerRouter } from './routes/emailer.router';
 import { fileUploadRouter } from './routes/file-upload'
 import { notFound, errorHandler } from "./middleware/errorHandler.middleware";
+import session from 'express-session'
 import  cookieParser  from 'cookie-parser'
+
 dotenv.config();
 const app = express();
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
-app.use(cookieParser())
 const options: cors.CorsOptions = {
     allowedHeaders: [
         'Origin',
@@ -38,10 +40,24 @@ getConnectionInstance();
 app.listen(process.env.PORT,()=>{
     console.log(`The server is listening on PORT ${process.env.PORT} `)  
 })
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }))
+
 app.get('/',(req,res)=>{
+        if(!req.session) {
+        req.session.regenerate;
+    }
+    res.setHeader("set-cookie","identifier=456fasdf456adfasd5f46")
+    res.cookie("ab","2005")
     res.send({
         "status":200,
-        "message":"This is just to test this endpoint is working!"
+        "message":"This is just to test this endpoint is working!",
+        "session":req.cookies,
     })
 })
 app.use("/users", usersRouter);
