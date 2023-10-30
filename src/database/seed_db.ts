@@ -5,7 +5,7 @@ import { Department } from "../models/department";
 import { Product, IProduct } from "../models/product";
 import deparment from './json-files/department.json';
 import category from './json-files/category.json';
-import target_com_data_2022_06_2 from './json-files/target_com_data_2022_06_2.json'
+//import target_com_data_2022_06_2 from './json-files/target_com_data_2022_06_2.json'
 import inital_products from './json-files/initial_products.json'
 import { mapDataToArray } from "./some-cool-functions";
 // Global Config
@@ -158,7 +158,8 @@ function getProducts() {
     main_image:"mainImage",
     specifications:"specifications"
   }
-  let dd = target_com_data_2022_06_2;
+ // let dd = target_com_data_2022_06_2;
+  let dd = []
   let pros = mapDataToArray(dd,mapOb)
   return pros
 }
